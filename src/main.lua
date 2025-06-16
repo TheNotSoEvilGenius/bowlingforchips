@@ -296,7 +296,7 @@ SMODS.Joker{ --The Count
 		end
 		if context.cardarea == G.jokers and context.joker_main then
             return{
-				message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}},
+				message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips*10}},
                 chip_mod = card.ability.extra.chips*10, 
                 colour = G.C.CHIPS
             }
