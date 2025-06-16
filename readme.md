@@ -1,6 +1,6 @@
 Spockholm
 
-A vanilla'esque Balatro mod with new themeded jokers. 
+A vanilla'esque Balatro mod with new themed jokers. 
 
 Features:
 
