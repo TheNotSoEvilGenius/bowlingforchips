@@ -240,14 +240,15 @@ SMODS.Joker{ --The Count
     config = {
         extra = {
 			chips = 0,
-			chip_gain = 1
+			chip_gain = 1,
+			multiplier = 5
 		}
     },
     loc_txt = {
         ['name'] = 'The Count',
         ['text'] = {
 			[1] = "This Joker adds {C:chips}chips{} equal to",
-			[2] = "{C:green}Running Count{} x {C:attention}10{}",
+			[2] = "{C:green}Running Count{} x {C:attention}#5#{}",
             [3] = "{C:green}+#1#{} count for each played {C:attention}2-6",
             [4] = "{C:green}-#1#{} count for each played {C:attention}10-Ace",
             [5] = "{C:inactive}(Running Count: {C:green}#3##2#{C:inactive})",
@@ -271,7 +272,7 @@ SMODS.Joker{ --The Count
 		if card.ability.extra.chips < 0 then
 			modifier = ""
 		end
-        return {vars = {card.ability.extra.chip_gain, card.ability.extra.chips,modifier,card.ability.extra.chips*10}}
+        return {vars = {card.ability.extra.chip_gain, card.ability.extra.chips,modifier,card.ability.extra.chips*card.ability.extra.multiplier,card.ability.extra.multiplier}}
     end,
 
     calculate = function(self, card, context)
@@ -296,8 +297,8 @@ SMODS.Joker{ --The Count
 		end
 		if context.cardarea == G.jokers and context.joker_main then
             return{
-				message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips*10}},
-                chip_mod = card.ability.extra.chips*10, 
+				message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips*card.ability.extra.multiplier}},
+                chip_mod = card.ability.extra.chips*card.ability.extra.multiplier, 
                 colour = G.C.CHIPS
             }
 		end
