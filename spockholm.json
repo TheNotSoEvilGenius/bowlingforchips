@@ -1,0 +1,16 @@
+{
+	"id": "spockholm",
+	"name": "Spockholm",
+	"display_name": "Spockholm",
+	"author": ["TNSEG"],
+	"description": "A vanilla'esque mod with new themed jokers",
+	"prefix": "spockholm",
+	"main_file": "src/main.lua",
+	"priority": 1,
+	"badge_colour": "2709e6",
+	"badge_text_colour": "d1eddd",
+	"version": "0.1.0",
+	"dependencies": [
+		"Steamodded (>=1.0.0~BETA-0404a)" 
+	]
+}
