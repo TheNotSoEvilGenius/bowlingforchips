@@ -77,7 +77,7 @@ SMODS.Joker{ --Insurance
         extra = {
 			odds = 3,
 			money = 5,
-			max_money = 15
+			max_money = 20
 		}
     },
     loc_txt = {
@@ -310,7 +310,7 @@ SMODS.Joker{ --Advantage Play
     config = {
         extra = {
 			cur_mult = 0,
-			mult_gain = 0.1
+			mult_gain = 0.15
 		}
     },
     loc_txt = {
@@ -626,8 +626,8 @@ SMODS.Joker{ --Deadwood
         x = 2,
         y = 1
     },
-    cost = 8,
-    rarity = 3,
+    cost = 6,
+    rarity = 2,
     blueprint_compat = false,
     eternal_compat = true,
     unlocked = true,
@@ -769,7 +769,7 @@ SMODS.Joker{ --Brooklyn
 			side = nil,
 			side_options = {"leftmost","rightmost"},
 			cards_ttrig = 2,
-			reps = 1,
+			reps = 2,
 			cards_to_trigger = {}
 		}
     },
