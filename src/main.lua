@@ -777,7 +777,7 @@ SMODS.Joker{ --Brooklyn
         ['name'] = 'Brooklyn',
         ['text'] = {
 			[1] = "Retrigger the {C:green}#1#{} {C:attention}#2#{} cards",
-			[2] = "in scoring hand {C:attention}#3#{} time", 
+			[2] = "in scoring hand {C:attention}#3#{} times", 
 			[3] = "{C:inactive}(Side changes after each hand){}"
         }
     }, 
