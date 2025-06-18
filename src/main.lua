@@ -421,7 +421,7 @@ SMODS.Joker{ --Hit Me
     },
     cost = 10,
     rarity = 3,
-    blueprint_compat = false,
+    blueprint_compat = true,
     eternal_compat = true,
     unlocked = true,
     discovered = true,
@@ -962,6 +962,63 @@ SMODS.Joker{ --Hands up
                     end)
                 }))
 				SMODS.destroy_cards(context.destroy_card)
+			end
+		end
+    end
+}
+SMODS.Joker{ --7-10 Split
+    name = "7-10 Split",
+    key = "710split",
+    config = {
+        extra = {
+		}
+    },
+    loc_txt = {
+        ['name'] = '7-10 Split',
+        ['text'] = {
+			[1] = "If played hand contains",
+			[2] = "a scoring {C:attention}7{} and {C:attention}10{}", 
+			[3] = "add a random {C:attention}Seal{} to",
+			[4] = "a random card in hand"
+        }
+    }, 
+    pos = {
+        x = 0,
+        y = 0
+    },
+    cost = 6,
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+        return {}
+    end,
+
+    calculate = function(self, card, context)
+		if context.before then
+			local seven = false
+			local ten = false
+			for i=1, #context.scoring_hand do
+				if context.scoring_hand[i]:get_id() == 7 and not seven then
+					seven = true
+				end
+				if context.scoring_hand[i]:get_id() == 10 and not ten then
+					ten = true
+				end
+			end
+			if seven and ten then
+				hand_card = pseudorandom_element(G.hand.cards, pseudoseed('seventencd'))
+				local seal_type = SMODS.poll_seal({guaranteed = true})
+				hand_card:set_seal(seal_type, true)
+				hand_card:juice_up(0.8, 0.8)
+				return {
+                    message = "Nice Pickup!",
+                    colour = G.C.GOLD
+                }
 			end
 		end
     end
