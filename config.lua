@@ -1,0 +1,1 @@
+return {["bowling"]=true,["blackjack"]=true,["misc"]=true}
