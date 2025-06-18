@@ -877,3 +877,54 @@ SMODS.Joker{ --Hands up
 		end
     end
 }
+SMODS.Joker{ --Hit Me
+    name = "Hit Me",
+    key = "hitme",
+    config = {
+        extra = {
+			odds = 2,
+			bust_dol = 25
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Hit Me',
+        ['text'] = {
+			[1] = "Sell this card",
+			[2] = "for {C:attention}+1{} hand size",
+			[3] = "{C:green}#2# in #1#{} chance",
+			[4] = "to lose all money"
+        }
+    }, 
+    pos = {
+        x = 2,
+        y = 3
+    },
+    cost = 10,
+    rarity = 3,
+    blueprint_compat = false,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra.odds, G.GAME.probabilities.normal,card.ability.extra.bust_dol}}
+    end,
+
+    calculate = function(self, card, context)
+		if context.selling_self then
+			G.hand:change_size(1)
+			if pseudorandom('hitme') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				ease_dollars(-G.GAME.dollars-card.sell_cost)
+				return {
+                    message = "Bust!",
+                    colour = G.C.RED
+                }
+			else
+				return {
+					message = localize('k_safe_ex')
+				}
+			end
+		end
+    end
+}
