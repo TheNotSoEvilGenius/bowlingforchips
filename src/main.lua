@@ -448,6 +448,83 @@ SMODS.Joker{ --Hit Me
 		end
     end
 }
+SMODS.Joker{ --Biased Wheel
+    name = "Biased Wheel",
+    key = "biasedwheel",
+    config = {
+        extra = {
+			initialized = false,
+			current_suit = "Spades",
+			colours = {
+				[1] = G.C.SUITS.Spades
+			},
+			potential_colors = {
+				["Spades"] = G.C.SUITS.Spades,
+				["Hearts"] = G.C.SUITS.Hearts,
+				["Clubs"] = G.C.SUITS.Clubs,
+				["Diamonds"] = G.C.SUITS.Diamonds,
+				["Stone"] = G.C.UI.TEXT_INACTIVE
+			}
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Biased Wheel',
+        ['text'] = {
+			[1] = "Retrigger each card",
+			[2] = "with {V:1}#1#{} #2#", 
+			[3] = "{C:inactive}(Changes at end of round){}"
+        }
+    }, 
+    pos = {
+        x = 3,
+        y = 3
+    },
+    cost = 6,
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		local suit_text = "suit"
+		if card.ability.extra.current_suit == "Stone" then
+			suit_text = "enhancement"
+		end
+		return {vars = {card.ability.extra.current_suit, suit_text, colours = card.ability.extra.colours}}
+    end,
+    calculate = function(self, card, context)
+		if context.setting_blind and not card.ability.extra.initialized then
+			--TODO Implement like ancient or rebate instead
+			local trigger_card = pseudorandom_element(G.playing_cards, pseudoseed('bwheel'..G.GAME.round_resets.ante))
+			if trigger_card.ability.effect == 'Stone Card' then
+				card.ability.extra.current_suit = "Stone"
+			else
+				card.ability.extra.current_suit = trigger_card.base.suit
+			end
+			card.ability.extra.colours[1] = card.ability.extra.potential_colors[card.ability.extra.current_suit]
+		end
+		if context.repetition then
+			if context.other_card:is_suit(card.ability.extra.current_suit) or (context.other_card.ability.effect == 'Stone Card' and card.ability.extra.current_suit == "Stone") then
+				return {
+					message = localize('k_again_ex'),
+					repetitions = 1,
+					card = card
+				}
+			end
+		end
+		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
+			local trigger_card = pseudorandom_element(G.playing_cards, pseudoseed('bwheel'..G.GAME.round_resets.ante))
+			if trigger_card.ability.effect == 'Stone Card' then
+				card.ability.extra.current_suit = "Stone"
+			else
+				card.ability.extra.current_suit = trigger_card.base.suit
+			end
+			card.ability.extra.colours[1] = card.ability.extra.potential_colors[card.ability.extra.current_suit]
+		end
+    end
+}
 end
 
 if spockconfig.bowling then --Bowling Jokers
@@ -601,8 +678,8 @@ SMODS.Joker{ --Rerack
         x = 1,
         y = 3
     },
-    cost = 5,
-    rarity = 2,
+    cost = 4,
+    rarity = 1,
     blueprint_compat = true,
     eternal_compat = true,
     unlocked = true,
@@ -815,10 +892,15 @@ SMODS.Joker{ --Spare Me
 		
 		if card.ability.extra.active then
 			--borrowed from Sigil in base game
-			local rank_suffix = card.ability.extra.retrigger_val < 10 and tostring(card.ability.extra.retrigger_val) or
-                                        card.ability.extra.retrigger_val == 10 and 'T' or card.ability.extra.retrigger_val == 11 and 'J' or
-                                        card.ability.extra.retrigger_val == 12 and 'Q' or card.ability.extra.retrigger_val == 13 and 'K' or
-                                        card.ability.extra.retrigger_val == 14 and 'A'
+			local rank_suffix = ""
+			if card.ability.extra.retrigger_val == 'Stone' then
+				rank_suffix = "Stone Card"
+			else
+				rank_suffix = card.ability.extra.retrigger_val < 10 and tostring(card.ability.extra.retrigger_val) or
+								card.ability.extra.retrigger_val == 10 and 'T' or card.ability.extra.retrigger_val == 11 and 'J' or
+								card.ability.extra.retrigger_val == 12 and 'Q' or card.ability.extra.retrigger_val == 13 and 'K' or
+								card.ability.extra.retrigger_val == 14 and 'A' 
+			end
 			active_text = "Retriggering "..rank_suffix.."'s"
 		end
         return {vars = {active_text}}
@@ -828,14 +910,17 @@ SMODS.Joker{ --Spare Me
 		if context.cardarea == G.jokers and context.joker_main and G.GAME.current_round.hands_played == 0 and not card.ability.extra.active and #context.full_hand == 1 and not context.blueprint then
 			--First hand and only 1 card and joker isn't currently active
 			card.ability.extra.active = true
-			card.ability.extra.retrigger_val = G.play.cards[1]:get_id()
-			
+			if G.play.cards[1].ability.effect == 'Stone Card' then
+				card.ability.extra.retrigger_val = "Stone"
+			else
+				card.ability.extra.retrigger_val = G.play.cards[1]:get_id()
+			end
 			local eval = function() return card.ability.extra.active end
 			juice_card_until(card, eval, true)
 		end
 		if context.repetition and context.cardarea == G.play and card.ability.extra.active then
             card.ability.extra.retrigged = true
-			if context.other_card:get_id() == card.ability.extra.retrigger_val then
+			if context.other_card:get_id() == card.ability.extra.retrigger_val or (card.ability.extra.retrigger_val == "Stone" and context.other_card.ability.effect == 'Stone Card') then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = card.ability.extra.reps,
@@ -983,8 +1068,8 @@ SMODS.Joker{ --7-10 Split
         }
     }, 
     pos = {
-        x = 0,
-        y = 0
+        x = 4,
+        y = 3
     },
     cost = 6,
     rarity = 2,
@@ -1020,6 +1105,361 @@ SMODS.Joker{ --7-10 Split
                     colour = G.C.GOLD
                 }
 			end
+		end
+    end
+}
+SMODS.Joker{ --Gutter Ball
+    name = "Gutter Ball",
+    key = "gutterball",
+    config = {
+        extra = {
+			most_played = {},
+			hands_played = {},
+			most_play_fail = false
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Gutter Ball',
+        ['text'] = {
+			[1] = "If most played {C:attention}poker hand{} is",
+			[2] = "{C:attention}not{} played in the round,", 
+			[3] = "add {C:attention}1{} level to all",
+			[4] = "played {C:attention}poker hand(s){}"
+        }
+    }, 
+    pos = {
+        x = 0,
+        y = 4
+    },
+    cost = 6,
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {}
+    end,
+
+    calculate = function(self, card, context)
+		if context.setting_blind then
+			local times_played = 0
+			card.ability.extra.most_played = {}
+			for k, v in pairs(G.GAME.hands) do
+				if v.played > times_played and v.visible then
+					card.ability.extra.most_played = {}
+					times_played = v.played
+					card.ability.extra.most_played[k] = v
+				elseif v.played == times_played and v.visible then
+					card.ability.extra.most_played[k] = v
+				end
+			end
+		end
+		if context.before and context.scoring_name then
+			if card.ability.extra.most_played[context.scoring_name] == nil then
+				--played hand isn't in the most Played
+				card.ability.extra.hands_played[context.scoring_name] = G.GAME.hands[context.scoring_name]
+			else
+				card.ability.extra.most_play_fail = true
+			end
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			if not card.ability.extra.most_play_fail then
+				for k, v in pairs(card.ability.extra.hands_played) do
+					level_up_hand(card, k, true)
+					card_eval_status_text(card, 'jokers', nil, nil, nil, {message = k.." Level Up!", colour = G.C.FILTER})
+				end
+				card.ability.extra.most_played = {}
+				card.ability.extra.hands_played = {}
+			else
+				card.ability.extra.most_play_fail = false
+				card.ability.extra.most_played = {}
+				card.ability.extra.hands_played = {}
+				return {
+                    message = "Gutter Ball",
+                    colour = G.C.RED
+                }
+			end
+		end
+    end
+}
+SMODS.Joker{ --Keep it Clean
+    name = "Keep it Clean",
+    key = "keepitclean",
+    config = {
+        extra = {
+			chip_gain = 10,
+			current_chips = 0
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Keep it Clean',
+        ['text'] = {
+			[1] = "Gain {C:chips}+#1#{} Chips if played",
+			[2] = "poker hand is {C:red}not{} a {C:attention}High Card{}", 
+			[3] = "Resets if {C:attention}High Card{} is played",
+			[4] = "{C:inactive}(Currently {}{C:chips}+#2#{}{C:inactive} Chips){}"
+        }
+    }, 
+    pos = {
+        x = 3,
+        y = 4
+    },
+    cost = 4,
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {vars = {card.ability.extra.chip_gain,card.ability.extra.current_chips}}
+    end,
+
+    calculate = function(self, card, context)
+		if context.before and context.scoring_name then
+			if context.scoring_name == "High Card" then
+				card.ability.extra.current_chips = 0
+				return {
+					message = localize('k_reset')
+				}
+			else
+				card.ability.extra.current_chips = card.ability.extra.current_chips+card.ability.extra.chip_gain
+			end
+		end
+		if context.cardarea == G.jokers and context.joker_main then
+			return{
+				chips = card.ability.extra.current_chips
+			}
+		end
+    end
+}
+SMODS.Joker{ --Fresh Oil
+    name = "Fresh Oil",
+    key = "freshoil",
+    config = {
+        extra = {
+			x_mult = 2,
+			hands_played = {}
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Fresh Oil',
+        ['text'] = {
+			[1] = "{X:mult,C:white}X#1#{} Mult if {C:attention}poker hand{}",
+			[2] = "has not been played", 
+			[3] = "this round"
+        }
+    }, 
+    pos = {
+        x = 0,
+        y = 5
+    },
+    cost = 5,
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {vars = {card.ability.extra.x_mult}}
+    end,
+
+    calculate = function(self, card, context)
+
+		if context.cardarea == G.jokers and context.joker_main then
+			if context.scoring_name and card.ability.extra.hands_played[context.scoring_name] == nil then
+				card.ability.extra.hands_played[context.scoring_name] = G.GAME.hands[context.scoring_name]
+				return{
+					xmult = card.ability.extra.x_mult
+				}
+			end
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			card.ability.extra.hands_played = {}
+		end
+    end
+}
+SMODS.Joker{ --Cosmic Night
+    name = "Cosmic Night",
+    key = "cosmicnight",
+    config = {
+        extra = {
+			chips = 40,
+			current_chips = 0,
+			average_level = 1
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Cosmic Night',
+        ['text'] = {
+			[1] = "{C:chips}+#1#{} Chips for the average",
+			[2] = "level of all poker hands", 
+			[3] = "{C:inactive}(Currently {}{C:chips}+#2#{} {C:inactive}Chips){}"
+        }
+    }, 
+    pos = {
+        x = 1,
+        y = 4
+    },
+    cost = 5,
+    rarity = 1,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {vars = {card.ability.extra.chips,card.ability.extra.current_chips}}
+    end,
+	
+	add_to_deck = function(self, card, from_debuff)
+		local sum_of_levels = 0
+		local num_of_hands = 0
+		for k, v in pairs(G.GAME.hands) do
+            if v.visible then
+				sum_of_levels = sum_of_levels+v.level
+				num_of_hands = num_of_hands+1
+			end
+		end
+		card.ability.extra.average_level = sum_of_levels/num_of_hands
+		card.ability.extra.current_chips = math.floor(card.ability.extra.average_level*card.ability.extra.chips)
+    end,
+	
+    calculate = function(self, card, context)
+		if context.cardarea == G.jokers and context.joker_main then
+				return{
+					chips = card.ability.extra.current_chips
+				}
+		end
+		if context.using_consumeable or context.before then
+			local sum_of_levels = 0
+			local num_of_hands = 0
+			for k, v in pairs(G.GAME.hands) do
+				if v.visible then
+					sum_of_levels = sum_of_levels+v.level
+					num_of_hands = num_of_hands+1
+				end
+			end
+			card.ability.extra.average_level = sum_of_levels/num_of_hands
+			card.ability.extra.current_chips = math.floor(card.ability.extra.average_level*card.ability.extra.chips)
+		end
+    end
+}
+SMODS.Joker{ --Resurface
+    name = "Resurface",
+    key = "resurface",
+    config = {
+        extra = {
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Resurface',
+        ['text'] = {
+			[1] = "Sell this joker to {C:attention}remove{}",
+			[2] = "all {C:enhanced}editions{} and {C:enhanced}tags{} ", 
+			[3] = "from {C:attention}Joker{} to the left"
+        }
+    }, 
+    pos = {
+        x = 2,
+        y = 4
+    },
+    cost = 6,
+    rarity = 2,
+    blueprint_compat = false,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {}
+    end,
+
+    calculate = function(self, card, context)
+		if context.selling_self then
+			local index = 0
+			for i = 1, #G.jokers.cards do
+				if G.jokers.cards[i] == card then
+					index = i break
+				end
+			end
+			if index > 1 and #G.jokers.cards > 1 then
+				G.jokers.cards[index-1].ability.eternal = false
+				G.jokers.cards[index-1].ability.perishable = false
+				G.jokers.cards[index-1].ability.rental = false
+				G.jokers.cards[index-1].edition = nil
+			end
+		end
+    end
+}
+SMODS.Joker{ --Clean Game
+    name = "Clean Game",
+    key = "cleangame",
+    config = {
+        extra = {
+			current_xmult = 1,
+			xmult = 0.5,
+			hands_played = 0,
+			hands_thres = 10
+		}
+    },
+    loc_txt = {
+        ['name'] = 'Clean Game',
+        ['text'] = {
+			[1] = "Gains {X:mult,C:white}X#2#{} mult ", 
+			[2] = "for every {C:attention}#3#{} hands",
+			[3] = "played without discarding",
+			[4] = "{C:inactive}(Currently {}{X:mult,C:white}X#1#{}{C:inactive} Mult){}",
+			[5] = "{C:inactive}({C:attention}#4#{}{C:inactive}/#3# Hands){}"
+        }
+    }, 
+    pos = {
+        x = 4,
+        y = 4
+    },
+    cost = 6,
+    rarity = 2,
+    blueprint_compat = true,
+    eternal_compat = true,
+    unlocked = true,
+    discovered = true,
+    atlas = 'spockholm',
+
+    loc_vars = function(self, info_queue, card)
+		return {vars = {card.ability.extra.current_xmult,card.ability.extra.xmult,card.ability.extra.hands_thres,card.ability.extra.hands_played}}
+    end,
+
+    calculate = function(self, card, context)
+		if context.before then
+			card.ability.extra.hands_played = card.ability.extra.hands_played+1
+			if card.ability.extra.hands_played == card.ability.extra.hands_thres then
+				card.ability.extra.hands_played = 0
+				card.ability.extra.current_xmult = card.ability.extra.current_xmult+card.ability.extra.xmult
+				return{
+					message = localize('k_upgrade_ex'),
+					colour = G.C.MULT
+				}
+			end
+		end
+		if context.cardarea == G.jokers and context.joker_main then
+			return{
+				xmult = card.ability.extra.current_xmult
+			}
+		end
+		if context.pre_discard then
+			card.ability.extra.hands_played = 0
+			return{
+                message = localize('k_reset'),
+                colour = G.C.RED
+            }
 		end
     end
 }
