@@ -1,6 +1,6 @@
-Spockholm
+Bowling for Chips
 
-A vanilla'esque Balatro mod with new themed jokers. 
+Includes new jokers, split amongst different themes (bowling, gambling/casino, misc). The intention is to add Jokers that mechanic wise fit within the Vanilla games intentions but expand on the ideas. The Jokers are intended to add a mix of interesting mechanics and new ways of retriggering cards for those powerful endless runs.
 
 Features:
 
