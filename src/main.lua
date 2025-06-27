@@ -1,5 +1,5 @@
 
-SMODS.Atlas{key = "spockholm", path = "JOKERS.png", px = 71, py = 95, atlas_table = "ASSET_ATLAS"}
+SMODS.Atlas{key = "bowlingforchips", path = "JOKERS.png", px = 71, py = 95, atlas_table = "ASSET_ATLAS"}
 
 spockconfig = SMODS.current_mod.config
 SMODS.current_mod.config_tab = function()
@@ -77,7 +77,7 @@ SMODS.Joker{ --OtterBox
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {}
@@ -134,7 +134,7 @@ SMODS.Joker{ --Insurance
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.odds, G.GAME.probabilities.normal, card.ability.extra.money, card.ability.extra.max_money}}
@@ -179,7 +179,7 @@ SMODS.Joker{ --Lucky Ladies
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.odds, G.GAME.probabilities.normal, card.ability.extra.Xmult}}
@@ -233,7 +233,7 @@ SMODS.Joker{ --Host
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.dollar_thres,card.ability.extra.thres_increase,card.ability.extra.current_spending}}
@@ -300,7 +300,7 @@ SMODS.Joker{ --The Count
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local modifier = "+"
@@ -367,7 +367,7 @@ SMODS.Joker{ --Advantage Play
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local current_mult = 0
@@ -425,7 +425,7 @@ SMODS.Joker{ --Hit Me
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.odds, G.GAME.probabilities.normal,card.ability.extra.bust_dol}}
@@ -485,7 +485,7 @@ SMODS.Joker{ --Biased Wheel
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local suit_text = "suit"
@@ -598,7 +598,7 @@ SMODS.Joker{ --Strike
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local remaining_text = tostring(card.ability.extra.cards_remaining).." of 10 cards remaining"
@@ -684,7 +684,7 @@ SMODS.Joker{ --Rerack
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {}
@@ -727,7 +727,7 @@ SMODS.Joker{ --Found a Line
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local _poker_hands = {}
@@ -798,7 +798,7 @@ SMODS.Joker{ --Deadwood
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {}
@@ -839,7 +839,7 @@ SMODS.Joker{ --Turkey
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.chips,card.ability.extra.xmult}}
@@ -885,7 +885,7 @@ SMODS.Joker{ --Spare Me
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		local active_text = "Inactive"
@@ -965,7 +965,7 @@ SMODS.Joker{ --Brooklyn
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		if card.ability.extra.side == nil then
@@ -1028,7 +1028,7 @@ SMODS.Joker{ --Hands up
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {}
@@ -1077,7 +1077,7 @@ SMODS.Joker{ --7-10 Split
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
         return {}
@@ -1137,7 +1137,7 @@ SMODS.Joker{ --Gutter Ball
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {}
@@ -1213,7 +1213,7 @@ SMODS.Joker{ --Keep it Clean
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {vars = {card.ability.extra.chip_gain,card.ability.extra.current_chips}}
@@ -1264,7 +1264,7 @@ SMODS.Joker{ --Fresh Oil
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {vars = {card.ability.extra.x_mult}}
@@ -1313,7 +1313,7 @@ SMODS.Joker{ --Cosmic Night
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {vars = {card.ability.extra.chips,card.ability.extra.current_chips}}
@@ -1377,7 +1377,7 @@ SMODS.Joker{ --Resurface
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {}
@@ -1431,7 +1431,7 @@ SMODS.Joker{ --Clean Game
     eternal_compat = true,
     unlocked = true,
     discovered = true,
-    atlas = 'spockholm',
+    atlas = 'bowlingforchips'
 
     loc_vars = function(self, info_queue, card)
 		return {vars = {card.ability.extra.current_xmult,card.ability.extra.xmult,card.ability.extra.hands_thres,card.ability.extra.hands_played}}
